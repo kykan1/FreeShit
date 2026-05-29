@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: #f6f0df;
+  --ink: #151513;
+  --blue: #2774ae;
+  --gold: #ffd100;
+  --clay: #b85c38;
+  --moss: #587a4d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background:
+    linear-gradient(90deg, rgba(39, 116, 174, .08) 1px, transparent 1px),
+    linear-gradient(rgba(21, 21, 19, .05) 1px, transparent 1px),
+    var(--paper);
+  background-size: 42px 42px;
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+button,
+select,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.font-display {
+  font-family: "Trebuchet MS", "Gill Sans", sans-serif;
+  letter-spacing: 0;
+}
+
+.paper-grain {
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255, 209, 0, .18), transparent 25%),
+    radial-gradient(circle at 80% 0%, rgba(184, 92, 56, .16), transparent 28%),
+    linear-gradient(135deg, rgba(255,255,255,.58), rgba(255,255,255,.2));
+}

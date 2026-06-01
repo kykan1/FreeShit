@@ -1,8 +1,9 @@
-import { CATEGORIES, DEFAULT_FRICTIONS, FRICTIONS } from "./constants";
+import { CATEGORIES, DEFAULT_FRICTIONS, FRICTIONS, SCHOOLS } from "./constants";
 import type { Friction, OfferCategory, School } from "./offerTypes";
 
 const categoryValues = new Set(CATEGORIES.map((category) => category.value));
 const frictionValues = new Set(FRICTIONS.map((friction) => friction.value));
+const schoolValues = new Set<string>(SCHOOLS.map((school) => school.value));
 
 export type FilterQueryState = {
   categories: OfferCategory[];
@@ -24,7 +25,8 @@ function parseList<T extends string>(value: string | null, allowed: Set<string>)
 export function readFiltersFromSearchParams(params: URLSearchParams): FilterQueryState {
   const categories = parseList<OfferCategory>(params.get("category"), categoryValues);
   const frictions = parseList<Friction>(params.get("friction"), frictionValues);
-  const school = params.get("school") === "ucla" ? "ucla" : "ucla";
+  const schoolParam = params.get("school");
+  const school = schoolParam && schoolValues.has(schoolParam) ? (schoolParam as School) : "ucla";
 
   return {
     categories,

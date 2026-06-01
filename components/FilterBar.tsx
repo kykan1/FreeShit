@@ -3,6 +3,7 @@ import { CategoryFilter } from "./CategoryFilter";
 import { FrictionFilter } from "./FrictionFilter";
 import { NearMeToggle } from "./NearMeToggle";
 import { SchoolSelect } from "./SchoolSelect";
+import { SubmitOfferLink } from "./SubmitOfferLink";
 
 export function FilterBar({
   selectedCategories,
@@ -31,7 +32,7 @@ export function FilterBar({
 }) {
   return (
     <div className="paper-grain border-y-2 border-ink px-4 py-5 shadow-card sm:px-6">
-      <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1fr_1fr_auto_auto] lg:items-start">
+      <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1fr_1fr_auto_auto_auto] lg:items-start">
         <CategoryFilter selected={selectedCategories} onToggle={onToggleCategory} onClear={onClearCategories} />
         <FrictionFilter selected={selectedFrictions} onToggle={onToggleFriction} />
         <SchoolSelect value={selectedSchool} onChange={onSelectSchool} />
@@ -40,6 +41,9 @@ export function FilterBar({
             <NearMeToggle active={nearMeActive} error={nearMeError} onToggle={onToggleNearMe} />
           </div>
         ) : null}
+        <div className="lg:pt-7">
+          <SubmitOfferLink school={selectedSchool} />
+        </div>
       </div>
     </div>
   );

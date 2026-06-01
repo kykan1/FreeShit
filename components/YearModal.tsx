@@ -65,19 +65,24 @@ export function YearModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-ink/72 px-4">
+    <div className="fixed inset-0 z-50 grid place-items-center bg-ink/82 px-4 backdrop-blur-sm">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(255,209,0,.2),transparent_34%)]" />
       <div
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="year-modal-title"
-        className="w-full max-w-xl border-2 border-ink bg-paper p-6 shadow-[12px_12px_0_rgba(255,209,0,1)]"
+        aria-describedby="year-modal-description"
+        className="relative w-full max-w-2xl border-2 border-ink bg-paper p-6 shadow-[12px_12px_0_rgba(255,209,0,1)] sm:p-8"
       >
         <div className="border-b-2 border-ink pb-4">
-          <p className="font-display text-xs font-black uppercase text-bru">One-time eligibility filter</p>
-          <h2 id="year-modal-title" className="font-display mt-2 text-4xl font-black leading-none text-ink">
+          <p className="font-display text-xs font-black uppercase text-bru">Required before browsing</p>
+          <h2 id="year-modal-title" className="font-display mt-2 text-4xl font-black leading-none text-ink sm:text-5xl">
             What year are you?
           </h2>
+          <p id="year-modal-description" className="mt-4 max-w-xl text-base font-semibold leading-7 text-ink/70">
+            Pick your class year so the dashboard can hide offers you are not eligible for. This stays on this device only.
+          </p>
         </div>
         <div className="mt-5 grid gap-2 sm:grid-cols-5">
           {STUDENT_YEARS.map((year, index) => (

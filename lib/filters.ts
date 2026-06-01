@@ -1,4 +1,5 @@
 import { getDistanceMiles, type GeoPoint } from "./distance";
+import { isOfferExpired } from "./freshness";
 import { isYearEligible } from "./yearEligibility";
 import type { DisplayOffer, Friction, Offer, OfferCategory, School, StudentYear } from "./offerTypes";
 
@@ -30,6 +31,7 @@ export function applyOfferFilters({
     const frictionMatch = frictions.length === 0 || frictions.includes(offer.friction);
 
     return (
+      !isOfferExpired(offer) &&
       categoryMatch &&
       frictionMatch &&
       matchesSchool(offer, school) &&

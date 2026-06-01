@@ -1,8 +1,8 @@
 import { formatMiles } from "@/lib/distance";
 import type { DisplayOffer } from "@/lib/offerTypes";
 import { Badge } from "./Badge";
-import { BrokenOfferLink } from "./BrokenOfferLink";
 import { ExpiryBadge } from "./ExpiryBadge";
+import { OfferVettingLinks } from "./OfferVettingLinks";
 
 const categoryLabel = {
   devtools: "Dev Tools",
@@ -45,11 +45,16 @@ export function OfferCard({
         <p className="border-l-4 border-gold pl-3 text-base font-bold leading-6 text-ink">
           {offer.one_liner}
         </p>
-        <ExpiryBadge expiryDate={offer.expiry_date} verifiedAt={offer.verified_at} />
+        <ExpiryBadge
+          expiryDate={offer.expiry_date}
+          expiryDatetime={offer.expiry_datetime}
+          category={offer.category}
+          verifiedAt={offer.verified_at}
+        />
       </div>
 
       <div className="mt-6 flex items-center justify-between gap-4 border-t border-ink/15 pt-4">
-        <BrokenOfferLink id={offer.id} title={offer.title} />
+        <OfferVettingLinks id={offer.id} title={offer.title} />
         <a
           href={offer.redemption_url}
           target="_blank"
@@ -57,7 +62,7 @@ export function OfferCard({
           aria-label={`Claim ${offer.title}`}
           className="font-display inline-flex h-11 items-center rounded-full border-2 border-ink bg-gold px-5 text-sm font-black text-ink transition group-hover:translate-x-1"
         >
-          Claim →
+          Claim <span aria-hidden="true">&rarr;</span>
         </a>
       </div>
     </article>

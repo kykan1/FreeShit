@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "validate:offers": "node scripts/validate-offers.mjs",
+    "check:offers": "node scripts/check-offer-links.mjs",
+    "report:offers": "node scripts/generate-offer-report.mjs"
   },
   "dependencies": {
     "next": "^14.2.15",

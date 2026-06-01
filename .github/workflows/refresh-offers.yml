@@ -1,0 +1,41 @@
+name: Refresh offers
+
+on:
+  schedule:
+    - cron: "17 14 * * *"
+  workflow_dispatch:
+
+jobs:
+  refresh-offers:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate offers
+        run: npm run validate:offers
+
+      - name: Check offer links
+        run: npm run check:offers -- --output offer-link-report.json
+        continue-on-error: true
+
+      - name: Generate offer report
+        run: npm run report:offers -- --links offer-link-report.json --output offer-refresh-report.md
+
+      - name: Upload offer report
+        uses: actions/upload-artifact@v4
+        with:
+          name: offer-refresh-report
+          path: |
+            offer-refresh-report.md
+            offer-link-report.json

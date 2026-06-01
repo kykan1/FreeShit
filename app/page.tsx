@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import offersData from "@/data/offers.json";
-import { DEFAULT_FRICTIONS } from "@/lib/constants";
+import { DEFAULT_FRICTIONS, SCHOOLS } from "@/lib/constants";
 import { type GeoPoint } from "@/lib/distance";
 import { applyOfferFilters } from "@/lib/filters";
 import type { Friction, Offer, OfferCategory, School, StudentYear } from "@/lib/offerTypes";
@@ -13,6 +13,8 @@ import { OfferGrid } from "@/components/OfferGrid";
 import { YearModal } from "@/components/YearModal";
 
 const USER_YEAR_KEY = "user_year";
+const USER_SCHOOL_KEY = "user_school";
+const schoolValues = new Set<string>(SCHOOLS.map((school) => school.value));
 const offers = offersData as Offer[];
 
 export default function DashboardPage() {
@@ -27,10 +29,18 @@ export default function DashboardPage() {
   const [nearMeError, setNearMeError] = useState<string | null>(null);
 
   useEffect(() => {
-    const parsed = readFiltersFromSearchParams(new URLSearchParams(window.location.search));
+    const searchParams = new URLSearchParams(window.location.search);
+    const parsed = readFiltersFromSearchParams(searchParams);
     setSelectedCategories(parsed.categories);
     setSelectedFrictions(parsed.frictions);
-    setSelectedSchool(parsed.school);
+
+    try {
+      const storedSchool = window.localStorage.getItem(USER_SCHOOL_KEY);
+      const safeStoredSchool = storedSchool && schoolValues.has(storedSchool as School) ? (storedSchool as School) : null;
+      setSelectedSchool(searchParams.has("school") ? parsed.school : safeStoredSchool ?? parsed.school);
+    } catch {
+      setSelectedSchool(parsed.school);
+    }
 
     let storedYear: StudentYear | null = null;
     try {
@@ -58,9 +68,15 @@ export default function DashboardPage() {
       frictions: selectedFrictions,
       school: selectedSchool
     });
+
+    try {
+      window.localStorage.setItem(USER_SCHOOL_KEY, selectedSchool);
+    } catch {
+      // URL state still keeps the selected campus shareable if storage is blocked.
+    }
   }, [hydrated, selectedCategories, selectedFrictions, selectedSchool]);
 
-  const foodSelected = selectedCategories.length === 0 || selectedCategories.includes("food");
+  const foodSelected = selectedCategories.includes("food");
 
   useEffect(() => {
     if (!foodSelected) {
@@ -141,6 +157,7 @@ export default function DashboardPage() {
   return (
     <main className="min-h-screen">
       <Header
+        selectedSchool={selectedSchool}
         selectedYear={selectedYear}
         onChangeYear={() => setYearModalOpen(true)}
         offerCount={filteredOffers.length}
@@ -159,7 +176,12 @@ export default function DashboardPage() {
         onToggleNearMe={toggleNearMe}
       />
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
-        <OfferGrid offers={filteredOffers} nearMeActive={nearMeActive} hasYear={Boolean(selectedYear)} />
+        <OfferGrid
+          offers={filteredOffers}
+          nearMeActive={nearMeActive}
+          hasYear={Boolean(selectedYear)}
+          selectedSchool={selectedSchool}
+        />
       </div>
       <YearModal
         open={yearModalOpen}

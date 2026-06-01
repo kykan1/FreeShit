@@ -1,34 +1,43 @@
+import { getFreshnessState } from "@/lib/freshness";
+import type { Offer } from "@/lib/offerTypes";
 import { Badge } from "./Badge";
-
-const DAY_MS = 24 * 60 * 60 * 1000;
 
 export function ExpiryBadge({
   expiryDate,
+  expiryDatetime,
+  category,
   verifiedAt
 }: {
   expiryDate: string | null;
+  expiryDatetime: string | null;
+  category: Offer["category"];
   verifiedAt: string;
 }) {
-  const now = new Date();
+  const state = getFreshnessState({
+    category,
+    expiry_date: expiryDate,
+    expiry_datetime: expiryDatetime,
+    verified_at: verifiedAt
+  });
   const badges = [];
 
-  if (expiryDate) {
-    const expires = new Date(expiryDate);
-    const daysUntilExpiry = (expires.getTime() - now.getTime()) / DAY_MS;
-
-    if (daysUntilExpiry >= 0 && daysUntilExpiry <= 7) {
-      badges.push(
-        <Badge key="expiring" tone="warning">
-          Expiring soon
-        </Badge>
-      );
-    }
+  if (state.urgent) {
+    badges.push(
+      <Badge key="urgent" tone="warning">
+        Ends within 24h
+      </Badge>
+    );
   }
 
-  const verified = new Date(verifiedAt);
-  const daysSinceVerified = (now.getTime() - verified.getTime()) / DAY_MS;
+  if (state.expiringSoon) {
+    badges.push(
+      <Badge key="expiring" tone="warning">
+        Expiring soon
+      </Badge>
+    );
+  }
 
-  if (daysSinceVerified > 60) {
+  if (state.stale) {
     badges.push(
       <Badge key="outdated" tone="muted">
         May be outdated

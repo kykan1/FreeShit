@@ -1,6 +1,20 @@
 export type OfferCategory = "devtools" | "food" | "software" | "swag" | "events" | "research";
 export type Friction = "instant" | "quick" | "involved";
-export type School = "ucla";
+export type School =
+  | "ucla"
+  | "usc"
+  | "berkeley"
+  | "stanford"
+  | "ucsd"
+  | "uci"
+  | "ucsb"
+  | "ucdavis"
+  | "ucsc"
+  | "ucr"
+  | "calpoly"
+  | "sdsu"
+  | "sjsu"
+  | "csulb";
 export type StudentYear = "freshman" | "sophomore" | "junior" | "senior" | "grad";
 
 export type Offer = {
@@ -15,6 +29,7 @@ export type Offer = {
   year_eligibility: StudentYear[] | "all";
   requires_edu_email: boolean;
   expiry_date: string | null;
+  expiry_datetime: string | null;
   verified_at: string;
   lat: number | null;
   lng: number | null;

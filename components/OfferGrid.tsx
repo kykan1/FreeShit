@@ -1,18 +1,21 @@
 import type { DisplayOffer } from "@/lib/offerTypes";
+import type { School } from "@/lib/offerTypes";
 import { EmptyState } from "./EmptyState";
 import { OfferCard } from "./OfferCard";
 
 export function OfferGrid({
   offers,
   nearMeActive,
-  hasYear
+  hasYear,
+  selectedSchool
 }: {
   offers: DisplayOffer[];
   nearMeActive: boolean;
   hasYear: boolean;
+  selectedSchool: School;
 }) {
   if (!offers.length) {
-    return <EmptyState hasYear={hasYear} />;
+    return <EmptyState hasYear={hasYear} selectedSchool={selectedSchool} />;
   }
 
   return (

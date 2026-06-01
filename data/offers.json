@@ -11,6 +11,7 @@
     "year_eligibility": "all",
     "requires_edu_email": true,
     "expiry_date": null,
+    "expiry_datetime": null,
     "verified_at": "2026-05-29",
     "lat": 34.07139,
     "lng": -118.44264
@@ -27,6 +28,7 @@
     "year_eligibility": "all",
     "requires_edu_email": false,
     "expiry_date": null,
+    "expiry_datetime": null,
     "verified_at": "2026-05-29",
     "lat": 34.07139,
     "lng": -118.44264
@@ -43,6 +45,7 @@
     "year_eligibility": "all",
     "requires_edu_email": true,
     "expiry_date": null,
+    "expiry_datetime": null,
     "verified_at": "2026-05-29",
     "lat": 34.07031,
     "lng": -118.44412
@@ -59,6 +62,7 @@
     "year_eligibility": "all",
     "requires_edu_email": true,
     "expiry_date": null,
+    "expiry_datetime": null,
     "verified_at": "2026-05-29",
     "lat": 34.07139,
     "lng": -118.44264
@@ -75,6 +79,7 @@
     "year_eligibility": "all",
     "requires_edu_email": false,
     "expiry_date": null,
+    "expiry_datetime": null,
     "verified_at": "2026-05-29",
     "lat": 34.06243,
     "lng": -118.44775
@@ -91,6 +96,7 @@
     "year_eligibility": "all",
     "requires_edu_email": false,
     "expiry_date": null,
+    "expiry_datetime": null,
     "verified_at": "2026-05-29",
     "lat": 34.06943,
     "lng": -118.43918
@@ -107,6 +113,7 @@
     "year_eligibility": "all",
     "requires_edu_email": true,
     "expiry_date": null,
+    "expiry_datetime": null,
     "verified_at": "2026-05-29",
     "lat": null,
     "lng": null
@@ -118,11 +125,12 @@
     "category": "devtools",
     "friction": "quick",
     "redemption_url": "https://www.jetbrains.com/community/education/#students",
-    "one_liner": "Apply with your UCLA email or current enrollment document.",
+    "one_liner": "Apply with your school email or current enrollment document.",
     "schools": "all",
     "year_eligibility": "all",
     "requires_edu_email": true,
     "expiry_date": null,
+    "expiry_datetime": null,
     "verified_at": "2026-05-29",
     "lat": null,
     "lng": null
@@ -139,6 +147,7 @@
     "year_eligibility": "all",
     "requires_edu_email": true,
     "expiry_date": null,
+    "expiry_datetime": null,
     "verified_at": "2026-05-29",
     "lat": null,
     "lng": null
@@ -150,11 +159,12 @@
     "category": "software",
     "friction": "instant",
     "redemption_url": "https://www.notion.com/product/notion-for-education",
-    "one_liner": "Sign in with your UCLA email and upgrade to Education Plus.",
+    "one_liner": "Sign in with your school email and upgrade to Education Plus.",
     "schools": "all",
     "year_eligibility": "all",
     "requires_edu_email": true,
     "expiry_date": null,
+    "expiry_datetime": null,
     "verified_at": "2026-05-29",
     "lat": null,
     "lng": null
@@ -171,6 +181,7 @@
     "year_eligibility": "all",
     "requires_edu_email": true,
     "expiry_date": null,
+    "expiry_datetime": null,
     "verified_at": "2026-05-29",
     "lat": null,
     "lng": null
@@ -187,6 +198,7 @@
     "year_eligibility": "all",
     "requires_edu_email": true,
     "expiry_date": null,
+    "expiry_datetime": null,
     "verified_at": "2026-05-29",
     "lat": null,
     "lng": null
@@ -203,6 +215,7 @@
     "year_eligibility": "all",
     "requires_edu_email": false,
     "expiry_date": null,
+    "expiry_datetime": null,
     "verified_at": "2026-05-29",
     "lat": 34.07139,
     "lng": -118.44264
@@ -219,6 +232,7 @@
     "year_eligibility": ["freshman", "sophomore", "junior", "senior"],
     "requires_edu_email": true,
     "expiry_date": null,
+    "expiry_datetime": null,
     "verified_at": "2026-05-29",
     "lat": 34.07031,
     "lng": -118.44412
@@ -235,6 +249,7 @@
     "year_eligibility": "all",
     "requires_edu_email": false,
     "expiry_date": null,
+    "expiry_datetime": null,
     "verified_at": "2026-05-29",
     "lat": 34.07534,
     "lng": -118.44025
@@ -251,6 +266,7 @@
     "year_eligibility": ["freshman", "sophomore", "junior", "senior"],
     "requires_edu_email": true,
     "expiry_date": null,
+    "expiry_datetime": null,
     "verified_at": "2026-05-29",
     "lat": null,
     "lng": null

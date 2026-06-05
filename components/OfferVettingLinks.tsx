@@ -1,31 +1,64 @@
-import { BROKEN_OFFER_EMAIL } from "@/lib/constants";
+"use client";
+
+import { useState } from "react";
+import type { DisplayOffer, OfferSignalType } from "@/lib/offerTypes";
 
 export function OfferVettingLinks({
-  id,
-  title
+  offer,
+  onSignal
 }: {
-  id: string;
-  title: string;
+  offer: DisplayOffer;
+  onSignal: (offer: DisplayOffer, signal: OfferSignalType) => Promise<void>;
 }) {
-  const worksSubject = encodeURIComponent(`Offer works: ${title}`);
-  const worksBody = encodeURIComponent(`Offer ID: ${id}\nThis offer worked for me.`);
-  const brokenSubject = encodeURIComponent(`Broken offer: ${title}`);
-  const brokenBody = encodeURIComponent(`Offer ID: ${id}\nThis offer appears to be broken, expired, or inaccurate.`);
+  const [busySignal, setBusySignal] = useState<OfferSignalType | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+
+  async function sendSignal(signal: OfferSignalType) {
+    setBusySignal(signal);
+    setMessage(null);
+
+    try {
+      await onSignal(offer, signal);
+      setMessage(signal === "works" ? "Confirmed" : "Flag sent");
+    } catch {
+      setMessage("Could not save");
+    } finally {
+      setBusySignal(null);
+    }
+  }
 
   return (
-    <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-      <a
-        className="font-display text-xs font-bold uppercase text-moss underline decoration-moss/25 underline-offset-4 hover:text-bru"
-        href={`mailto:${BROKEN_OFFER_EMAIL}?subject=${worksSubject}&body=${worksBody}`}
+    <div className="flex flex-wrap items-center gap-2">
+      <button
+        type="button"
+        onClick={() => sendSignal("works")}
+        disabled={Boolean(busySignal)}
+        className="font-display rounded-full border border-moss px-3 py-1 text-xs font-bold uppercase text-moss transition hover:bg-moss hover:text-white disabled:cursor-wait disabled:opacity-60"
       >
-        Works
-      </a>
-      <a
-        className="font-display text-xs font-bold uppercase text-ink/55 underline decoration-ink/25 underline-offset-4 hover:text-clay"
-        href={`mailto:${BROKEN_OFFER_EMAIL}?subject=${brokenSubject}&body=${brokenBody}`}
+        {busySignal === "works" ? "Saving" : "Works"}
+      </button>
+      <select
+        aria-label={`Flag ${offer.title}`}
+        disabled={Boolean(busySignal)}
+        defaultValue=""
+        onChange={(event) => {
+          const signal = event.target.value as OfferSignalType;
+          event.target.value = "";
+          if (signal) {
+            void sendSignal(signal);
+          }
+        }}
+        className="font-display h-8 rounded-full border border-ink/30 bg-white px-2 text-xs font-bold uppercase text-ink/65 disabled:cursor-wait disabled:opacity-60"
       >
-        Flag broken
-      </a>
+        <option value="" disabled>
+          Flag
+        </option>
+        <option value="broken">Broken</option>
+        <option value="expired">Expired</option>
+        <option value="duplicate">Duplicate</option>
+        <option value="scammy">Scammy</option>
+      </select>
+      {message ? <span className="font-display text-xs font-bold uppercase text-ink/50">{message}</span> : null}
     </div>
   );
 }

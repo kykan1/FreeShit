@@ -1,5 +1,6 @@
 import { formatMiles } from "@/lib/distance";
-import type { DisplayOffer } from "@/lib/offerTypes";
+import { defaultSignalSummary } from "@/lib/community";
+import type { DisplayOffer, OfferSignalSummary, OfferSignalType } from "@/lib/offerTypes";
 import { Badge } from "./Badge";
 import { ExpiryBadge } from "./ExpiryBadge";
 import { OfferVettingLinks } from "./OfferVettingLinks";
@@ -21,12 +22,18 @@ const frictionLabel = {
 
 export function OfferCard({
   offer,
-  nearMeActive
+  nearMeActive,
+  signalSummary,
+  onSignal
 }: {
   offer: DisplayOffer;
   nearMeActive: boolean;
+  signalSummary?: OfferSignalSummary;
+  onSignal: (offer: DisplayOffer, signal: OfferSignalType) => Promise<void>;
 }) {
   const showDistance = nearMeActive && offer.category === "food" && typeof offer.distanceMiles === "number";
+  const summary = signalSummary ?? defaultSignalSummary();
+  const source = offer.offer_source ?? "seed";
 
   return (
     <article className="group flex min-h-[270px] flex-col justify-between border-2 border-ink bg-paper p-5 shadow-card transition duration-200 hover:-translate-y-1 hover:bg-white">
@@ -35,6 +42,10 @@ export function OfferCard({
           <div className="flex flex-wrap gap-2">
             <Badge tone="category">{categoryLabel[offer.category]}</Badge>
             <Badge tone="friction">{frictionLabel[offer.friction]}</Badge>
+            {source === "community" ? <Badge tone="muted">Community</Badge> : null}
+            {summary.communityVerified ? <Badge tone="category">Community verified</Badge> : null}
+            {summary.recentlyConfirmed ? <Badge tone="friction">Recently confirmed</Badge> : null}
+            {summary.needsReview ? <Badge tone="muted">Needs review</Badge> : null}
           </div>
           {showDistance ? <Badge tone="muted">{formatMiles(offer.distanceMiles!)}</Badge> : null}
         </div>
@@ -51,10 +62,16 @@ export function OfferCard({
           category={offer.category}
           verifiedAt={offer.verified_at}
         />
+        {(summary.works > 0 || summary.flags > 0) ? (
+          <div className="font-display flex flex-wrap gap-2 text-xs font-black uppercase text-ink/55">
+            {summary.works > 0 ? <span>{summary.works} worked</span> : null}
+            {summary.flags > 0 ? <span>{summary.flags} flags</span> : null}
+          </div>
+        ) : null}
       </div>
 
       <div className="mt-6 flex items-center justify-between gap-4 border-t border-ink/15 pt-4">
-        <OfferVettingLinks id={offer.id} title={offer.title} />
+        <OfferVettingLinks offer={offer} onSignal={onSignal} />
         <a
           href={offer.redemption_url}
           target="_blank"

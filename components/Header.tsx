@@ -6,11 +6,13 @@ export function Header({
   selectedSchool,
   selectedYear,
   onChangeYear,
+  onSubmitOffer,
   offerCount
 }: {
   selectedSchool: School;
   selectedYear: StudentYear | null;
   onChangeYear: () => void;
+  onSubmitOffer: (school: School) => void;
   offerCount: number;
 }) {
   const school = SCHOOLS.find((item) => item.value === selectedSchool);
@@ -39,7 +41,7 @@ export function Header({
         >
           {selectedYear ? `Change year (${selectedYear})` : "Set your year"}
         </button>
-        <SubmitOfferLink school={selectedSchool} compact />
+        <SubmitOfferLink school={selectedSchool} compact onOpen={onSubmitOffer} />
       </div>
     </header>
   );

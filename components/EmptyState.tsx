@@ -3,10 +3,12 @@ import { SubmitOfferLink } from "./SubmitOfferLink";
 
 export function EmptyState({
   hasYear,
-  selectedSchool
+  selectedSchool,
+  onSubmitOffer
 }: {
   hasYear: boolean;
   selectedSchool: School;
+  onSubmitOffer: (school: School) => void;
 }) {
   return (
     <div className="mx-auto max-w-2xl border-2 border-dashed border-ink/30 bg-white/55 p-8 text-center shadow-card">
@@ -18,7 +20,7 @@ export function EmptyState({
       </p>
       {hasYear ? (
         <div className="mt-6">
-          <SubmitOfferLink school={selectedSchool} />
+          <SubmitOfferLink school={selectedSchool} onOpen={onSubmitOffer} />
         </div>
       ) : null}
     </div>

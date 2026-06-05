@@ -3,13 +3,21 @@
 import { useEffect, useMemo, useState } from "react";
 import offersData from "@/data/offers.json";
 import { DEFAULT_FRICTIONS, SCHOOLS } from "@/lib/constants";
+import {
+  buildSignalSummaries,
+  communitySubmissionToOffer,
+  fetchApprovedSubmissions,
+  fetchSignals,
+  submitSignal
+} from "@/lib/community";
 import { type GeoPoint } from "@/lib/distance";
 import { applyOfferFilters } from "@/lib/filters";
-import type { Friction, Offer, OfferCategory, School, StudentYear } from "@/lib/offerTypes";
+import type { DisplayOffer, Friction, Offer, OfferCategory, OfferSignalSummary, OfferSignalType, School, StudentYear } from "@/lib/offerTypes";
 import { readFiltersFromSearchParams, writeFiltersToUrl } from "@/lib/queryState";
 import { FilterBar } from "@/components/FilterBar";
 import { Header } from "@/components/Header";
 import { OfferGrid } from "@/components/OfferGrid";
+import { SubmitOfferModal } from "@/components/SubmitOfferModal";
 import { YearModal } from "@/components/YearModal";
 
 const USER_YEAR_KEY = "user_year";
@@ -27,6 +35,10 @@ export default function DashboardPage() {
   const [nearMeActive, setNearMeActive] = useState(false);
   const [userLocation, setUserLocation] = useState<GeoPoint | null>(null);
   const [nearMeError, setNearMeError] = useState<string | null>(null);
+  const [communityOffers, setCommunityOffers] = useState<Offer[]>([]);
+  const [signalSummaries, setSignalSummaries] = useState<Record<string, OfferSignalSummary>>({});
+  const [submitModalOpen, setSubmitModalOpen] = useState(false);
+  const [submitSchool, setSubmitSchool] = useState<School>("ucla");
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -78,6 +90,20 @@ export default function DashboardPage() {
 
   const foodSelected = selectedCategories.includes("food");
 
+  async function refreshCommunityData() {
+    const [submissions, signals] = await Promise.all([fetchApprovedSubmissions(), fetchSignals()]);
+    setCommunityOffers(submissions.map(communitySubmissionToOffer));
+    setSignalSummaries(buildSignalSummaries(signals));
+  }
+
+  useEffect(() => {
+    if (!hydrated) {
+      return;
+    }
+
+    void refreshCommunityData();
+  }, [hydrated]);
+
   useEffect(() => {
     if (!foodSelected) {
       setNearMeActive(false);
@@ -88,7 +114,10 @@ export default function DashboardPage() {
   const filteredOffers = useMemo(
     () =>
       applyOfferFilters({
-        offers,
+        offers: [
+          ...offers.map((offer) => ({ ...offer, offer_source: "seed" as const })),
+          ...communityOffers.map((offer) => ({ ...offer, offer_source: "community" as const }))
+        ],
         categories: selectedCategories,
         frictions: selectedFrictions,
         school: selectedSchool,
@@ -96,7 +125,7 @@ export default function DashboardPage() {
         nearMeActive,
         userLocation
       }),
-    [nearMeActive, selectedCategories, selectedFrictions, selectedSchool, selectedYear, userLocation]
+    [communityOffers, nearMeActive, selectedCategories, selectedFrictions, selectedSchool, selectedYear, userLocation]
   );
 
   function toggleCategory(category: OfferCategory) {
@@ -154,12 +183,31 @@ export default function DashboardPage() {
     );
   }
 
+  function openSubmitModal(school: School) {
+    setSubmitSchool(school);
+    setSubmitModalOpen(true);
+  }
+
+  async function handleSignal(offer: DisplayOffer, signal: OfferSignalType) {
+    const offerSource = offer.offer_source ?? "seed";
+    const offerId = offerSource === "community" ? offer.id.replace(/^community:/, "") : offer.id;
+
+    await submitSignal({
+      offerId,
+      offerSource,
+      school: selectedSchool,
+      signal
+    });
+    await refreshCommunityData();
+  }
+
   return (
     <main className="min-h-screen">
       <Header
         selectedSchool={selectedSchool}
         selectedYear={selectedYear}
         onChangeYear={() => setYearModalOpen(true)}
+        onSubmitOffer={openSubmitModal}
         offerCount={filteredOffers.length}
       />
       <FilterBar
@@ -174,6 +222,7 @@ export default function DashboardPage() {
         onToggleFriction={toggleFriction}
         onSelectSchool={setSelectedSchool}
         onToggleNearMe={toggleNearMe}
+        onSubmitOffer={openSubmitModal}
       />
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
         <OfferGrid
@@ -181,8 +230,19 @@ export default function DashboardPage() {
           nearMeActive={nearMeActive}
           hasYear={Boolean(selectedYear)}
           selectedSchool={selectedSchool}
+          signalSummaries={signalSummaries}
+          onSignal={handleSignal}
+          onSubmitOffer={openSubmitModal}
         />
       </div>
+      <SubmitOfferModal
+        open={submitModalOpen}
+        school={submitSchool}
+        onClose={() => {
+          setSubmitModalOpen(false);
+          void refreshCommunityData();
+        }}
+      />
       <YearModal
         open={yearModalOpen}
         selectedYear={selectedYear}

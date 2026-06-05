@@ -1,29 +1,18 @@
-import { SUBMIT_OFFER_EMAIL } from "@/lib/constants";
 import type { School } from "@/lib/offerTypes";
 
 export function SubmitOfferLink({
   school,
-  compact = false
+  compact = false,
+  onOpen
 }: {
   school: School;
   compact?: boolean;
+  onOpen: (school: School) => void;
 }) {
-  const subject = encodeURIComponent(`New free offer for ${school}`);
-  const body = encodeURIComponent(
-    [
-      `School: ${school}`,
-      "Offer title:",
-      "Claim URL:",
-      "Category:",
-      "Why it is free for students:",
-      "Expiration date/time, if known:",
-      "Source or proof:"
-    ].join("\n")
-  );
-
   return (
-    <a
-      href={`mailto:${SUBMIT_OFFER_EMAIL}?subject=${subject}&body=${body}`}
+    <button
+      type="button"
+      onClick={() => onOpen(school)}
       className={
         compact
           ? "font-display text-xs font-black uppercase text-bru underline decoration-bru/35 underline-offset-4 hover:text-clay"
@@ -31,6 +20,6 @@ export function SubmitOfferLink({
       }
     >
       Submit offer
-    </a>
+    </button>
   );
 }

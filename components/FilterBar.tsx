@@ -16,7 +16,8 @@ export function FilterBar({
   onClearCategories,
   onToggleFriction,
   onSelectSchool,
-  onToggleNearMe
+  onToggleNearMe,
+  onSubmitOffer
 }: {
   selectedCategories: OfferCategory[];
   selectedFrictions: Friction[];
@@ -29,6 +30,7 @@ export function FilterBar({
   onToggleFriction: (friction: Friction) => void;
   onSelectSchool: (school: School) => void;
   onToggleNearMe: () => void;
+  onSubmitOffer: (school: School) => void;
 }) {
   return (
     <div className="paper-grain border-y-2 border-ink px-4 py-5 shadow-card sm:px-6">
@@ -42,7 +44,7 @@ export function FilterBar({
           </div>
         ) : null}
         <div className="lg:pt-7">
-          <SubmitOfferLink school={selectedSchool} />
+          <SubmitOfferLink school={selectedSchool} onOpen={onSubmitOffer} />
         </div>
       </div>
     </div>
